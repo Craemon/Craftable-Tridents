@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "SSS",
+        " B "
+    ],
+    "key": {
+        "S": {
+            "item": "minecraft:prismarine_shard"
+        },
+        "B": {
+            "item": "minecraft:breeze_rod"
+        }
+    },
+    "result": {
+        "id": "minecraft:trident",
+        "count": 1
+    }
+}
