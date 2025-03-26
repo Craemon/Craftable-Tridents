@@ -20,8 +20,17 @@ jobs:
         run: |
           VERSION=$(jq -r '.pack.pack_format' pack.mcmeta)
           REPO_NAME=$(basename $GITHUB_REPOSITORY)
-          ZIP_NAME="${REPO_NAME}-v${VERSION}.zip"
+          TAG_NAME="v${VERSION}"
+          ZIP_NAME="${REPO_NAME}-${TAG_NAME}.zip"
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
+
+      - name: Create and push tag
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git tag ${{ env.TAG_NAME }}
+          git push origin ${{ env.TAG_NAME }}
 
       - name: Create ZIP archive
         run: |
@@ -30,6 +39,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ env.TAG_NAME }}
           files: ${{ env.ZIP_NAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
