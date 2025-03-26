@@ -1,0 +1,35 @@
+name: Create Datapack Release
+
+on:
+  push:
+    tags:
+      - "v*"  # Triggers on version tags like v1.0, v2.3, etc.
+
+jobs:
+  release:
+    name: Zip and Release Datapack
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract Version from pack.mcmeta
+        id: get_version
+        run: |
+          VERSION=$(jq -r '.pack.pack_format' pack.mcmeta)
+          REPO_NAME=$(basename $GITHUB_REPOSITORY)
+          ZIP_NAME="${REPO_NAME}-v${VERSION}.zip"
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
+
+      - name: Create ZIP archive
+        run: |
+          zip -r "$ZIP_NAME" . -x "*.git*" ".github/*"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP_NAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
+          prerelease: false
