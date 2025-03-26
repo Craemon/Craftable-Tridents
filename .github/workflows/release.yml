@@ -2,8 +2,9 @@ name: Create Datapack Release
 
 on:
   push:
-    tags:
-      - "v*"  # Triggers on version tags like v1.0, v2.3, etc.
+    branches:
+      - release  # Runs when pushing to the "release" branch
+  workflow_dispatch:  # Allows manual execution from GitHub
 
 jobs:
   release:
